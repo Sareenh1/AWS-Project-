@@ -1,46 +1,34 @@
-# CPU Spike Simulation Script
+To implement autoscaling and load balancing for the given CPU spike simulation script on AWS, you can use Amazon EC2 instances, Auto Scaling Groups, and an Application Load Balancer. Here are the steps:
 
-## Overview
+1. **Create an Amazon Machine Image (AMI):**
+   - Launch an EC2 instance.
+   - Install the necessary dependencies and upload your script.
+   - Configure the instance to automatically start your script upon boot.
+   - Create an AMI from this instance.
 
-This Python script demonstrates a simple way to simulate a CPU spike, allowing users to test and observe system behavior under high CPU utilization. The script utilizes a nested loop of arithmetic operations to consume CPU resources and achieve the desired percentage of CPU utilization. The simulation runs for a specified duration, after which it completes and prints a message.
+2. **Launch Configuration:**
+   - Go to the AWS Management Console.
+   - Navigate to EC2 -> Auto Scaling -> Launch Configurations.
+   - Create a launch configuration using the AMI created in step 1.
 
-## Usage
+3. **Auto Scaling Group:**
+   - In the AWS Management Console, go to EC2 -> Auto Scaling -> Auto Scaling Groups.
+   - Create an Auto Scaling Group using the launch configuration from step 2.
+   - Configure scaling policies based on CPU utilization. For example, you can set up a policy to add instances when the CPU utilization is high and remove instances when it's low.
 
-### Requirements
+4. **Load Balancer:**
+   - In the AWS Management Console, go to EC2 -> Load Balancers.
+   - Create an Application Load Balancer (ALB).
+   - Configure listeners and target groups. Add the instances from the Auto Scaling Group to the target group.
 
-- Python 3.x
+5. **Update Security Groups:**
+   - Make sure your instances' security groups allow traffic from the load balancer.
 
-### Instructions
+6. **Test the Setup:**
+   - Once your Auto Scaling Group is running instances and registered with the load balancer, test the setup by accessing the ALB's DNS name or IP.
 
-1. Clone or download the script to your local machine.
-2. Ensure you have Python 3.x installed.
-3. Open a terminal or command prompt and navigate to the script's directory.
-4. Run the script using the following command:
+Now, when your CPU spike simulation script runs and triggers high CPU utilization, the Auto Scaling Group will automatically scale out by launching additional instances. The load balancer will distribute traffic among the instances.
 
-    ```bash
-    python cpu_spike_simulation.py
-    ```
+Note: Ensure that your script and dependencies are configured correctly for this environment. Additionally, consider monitoring and adjusting the Auto Scaling Group settings based on your specific requirements.
 
-5. The script will simulate a CPU spike for 30 seconds with 80% CPU utilization by default. You can customize the duration and CPU percentage by modifying the function parameters in the script.
-
-## Customization
-
-You can customize the simulation by adjusting the following parameters:
-
-- `duration`: The duration of the CPU spike simulation in seconds (default is 30 seconds).
-- `cpu_percent`: The target CPU utilization percentage during the spike (default is 80%).
-
-Modify the values in the `simulate_cpu_spike` function call to experiment with different CPU utilization scenarios.
-
-```python
-# Example: Simulate a CPU spike for 60 seconds with 90% CPU utilization
-simulate_cpu_spike(duration=60, cpu_percent=90)
-```
-
-## Important Note
-
-This script is intended for educational and testing purposes. Running the script may cause increased CPU usage, so use it responsibly and avoid running it on systems with critical workloads.
-
-## Disclaimer
-
-The authors of this script are not responsible for any potential issues or consequences resulting from the use of this script. Use it at your own risk and only in environments where it is appropriate to simulate increased CPU usage.
+Keep in mind that this is a basic setup. Depending on your specific use case, you might need to customize the configuration, add health checks, set up alarms, and fine-tune scaling policies for optimal performance.
